@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 
 export class UserController {
 	async create(req: Request, res: Response) {
-		const { name, email, password } = req.body
+		const { name, email, password, role } = req.body
 
 		const userExists = await userRepository.findOneBy({ email })
 
@@ -20,6 +20,7 @@ export class UserController {
 			name,
 			email,
 			password: hashPassword,
+			role,
 		})
 
 		await userRepository.save(newUser)
@@ -45,7 +46,7 @@ export class UserController {
 		}
 
 		const token = jwt.sign({ id: user.id }, process.env.JWT_PASS ?? '', {
-			expiresIn: '8h',
+			expiresIn: '1h',
 		})
 
 		const { password: _, ...userLogin } = user
